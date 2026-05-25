@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light" data-font-size="md">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Focus Orbit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ══ 侧边导航 ══ -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">FO</div>
+      <div class="logo-text">
+        <strong>Focus Orbit</strong>
+        <span>专注工具</span>
+      </div>
+    </div>
+
+    <ul class="nav-list">
+      <li><button class="nav-item active" data-page="profile"  type="button"><span class="nav-icon">◎</span><span class="nav-label">个人中心</span></button></li>
+      <li><button class="nav-item"        data-page="focus"    type="button"><span class="nav-icon">▷</span><span class="nav-label">开始专注</span></button></li>
+      <li><button class="nav-item"        data-page="planner"  type="button"><span class="nav-icon">☰</span><span class="nav-label">今日清单</span></button></li>
+      <li><button class="nav-item"        data-page="calendar" type="button"><span class="nav-icon">◧</span><span class="nav-label">日历安排</span></button></li>
+      <li><button class="nav-item"        data-page="insights" type="button"><span class="nav-icon">◑</span><span class="nav-label">我的专注</span></button></li>
+      <li><button class="nav-item"        data-page="notebook" type="button"><span class="nav-icon">✎</span><span class="nav-label">每日记事本</span></button></li>
+      <li><button class="nav-item"        data-page="history"  type="button"><span class="nav-icon">✓</span><span class="nav-label">我的完成</span></button></li>
+    </ul>
+
+    <div class="sidebar-bottom">
+      <div class="settings-group">
+        <div class="settings-row">
+          <span class="settings-label">外观</span>
+          <div class="theme-btns">
+            <button class="theme-btn active" data-theme="light" type="button" title="日间">☀</button>
+            <button class="theme-btn"        data-theme="dark"  type="button" title="暗夜">☾</button>
+          </div>
+        </div>
+      </div>
+      <button class="mini-trigger" id="miniTrigger" type="button"><span>⊡</span> 小窗模式</button>
+    </div>
+  </nav>
+
+  <!-- ══ 主内容区 ══ -->
+  <main class="content" id="content">
+
+    <!-- ════ 个人中心 ════ -->
+    <section class="page active" id="page-profile">
+      <div class="page-header">
+        <div class="page-eyebrow">Personal</div>
+        <h1 class="page-title">个人中心</h1>
+        <p class="page-sub">查看你的专注状态与今日概况</p>
+      </div>
+      <div class="profile-grid">
+        <div class="profile-hero-card card">
+          <div class="profile-avatar"><span id="avatarInitial">U</span></div>
+          <div class="profile-info">
+            <h2 id="profileName">专注者</h2>
+            <p id="profileBio" class="muted">今天也要好好专注！</p>
+          </div>
+          <button class="ghost-btn sm" id="editProfileBtn" type="button">编辑</button>
+        </div>
+        <div class="edit-panel card hidden" id="editPanel">
+          <h3>编辑个人信息</h3>
+          <label>昵称<input type="text" id="nameInput" placeholder="你叫什么？"></label>
+          <label>一句话目标<input type="text" id="bioInput" placeholder="今天的专注目标是…"></label>
+          <div class="btn-row">
+            <button class="primary-btn sm" id="saveProfileBtn"   type="button">保存</button>
+            <button class="ghost-btn sm"   id="cancelProfileBtn" type="button">取消</button>
+          </div>
+        </div>
+        <div class="stats-row">
+          <article class="stat-chip card"><span class="stat-label">今日专注</span><strong class="stat-value" id="p-todayMins">0<small>分钟</small></strong></article>
+          <article class="stat-chip card"><span class="stat-label">连续天数</span><strong class="stat-value" id="p-streak">0<small>天</small></strong></article>
+          <article class="stat-chip card"><span class="stat-label">总专注</span><strong class="stat-value"    id="p-totalMins">0<small>分钟</small></strong></article>
+          <article class="stat-chip card"><span class="stat-label">完成任务</span><strong class="stat-value" id="p-doneTasks">0<small>项</small></strong></article>
+        </div>
+        <div class="card current-focus-card">
+          <div class="cfc-label">当前专注任务</div>
+          <strong class="cfc-task" id="p-currentTask">未选择任务</strong>
+          <div class="cfc-meta" id="p-currentTag"></div>
+        </div>
+        <div class="card font-size-card">
+          <div class="fsc-label">字号大小</div>
+          <div class="fsc-row">
+            <span class="fsc-small">A</span>
+            <input type="range" id="fontSizeSlider" min="85" max="125" step="1" value="100" class="fsc-slider">
+            <span class="fsc-large">A</span>
+          </div>
+          <div class="fsc-hint muted small" id="fontSizeHint">100%</div>
+        </div>
+        <div class="card music-card">
+          <div class="mc-label">音乐 Demo</div>
+          <div class="mc-active muted small" id="mcActiveSong">当前没有进行中的音乐</div>
+          <div class="mc-service-tabs">
+            <button class="svc-tab active" data-svc="netease" type="button">网易云</button>
+            <button class="svc-tab"        data-svc="kugou"   type="button">酷狗</button>
+          </div>
+          <div class="mc-top-song" id="mc-topSong"><span class="muted">还没有记录</span></div>
+          <div class="mc-input-row">
+            <input type="text" id="songInput" placeholder="输入正在听的歌曲…">
+            <button class="ghost-btn sm" id="logSongBtn" type="button">记录</button>
+          </div>
+          <div class="mc-list" id="mc-songList"></div>
+        </div>
+        <div class="card appearance-card">
+          <div class="fsc-label">壁纸与字体</div>
+          <div class="appearance-grid">
+            <label class="appearance-field">网页壁纸
+              <input type="file" id="pageWallpaperFile" accept="image/*">
+            </label>
+            <label class="appearance-field">网页字体颜色
+              <input type="color" id="pageTextColor" value="#1a1108">
+            </label>
+            <label class="appearance-field">小窗壁纸
+              <input type="file" id="miniWallpaperFile" accept="image/*">
+            </label>
+            <label class="appearance-field">小窗字体颜色
+              <input type="color" id="miniTextColor" value="#f5ede4">
+            </label>
+            <label class="appearance-field">导航毛玻璃程度
+              <input type="range" id="sidebarBlur" min="0" max="32" step="1" value="18">
+            </label>
+            <label class="appearance-field">导航透明程度
+              <input type="range" id="sidebarOpacity" min="20" max="100" step="1" value="82">
+            </label>
+            <label class="appearance-field">中间毛玻璃程度
+              <input type="range" id="contentBlur" min="0" max="36" step="1" value="14">
+            </label>
+            <label class="appearance-field">中间透明程度
+              <input type="range" id="contentOpacity" min="20" max="100" step="1" value="84">
+            </label>
+            <label class="appearance-field">小窗毛玻璃程度
+              <input type="range" id="miniBlur" min="0" max="32" step="1" value="20">
+            </label>
+            <label class="appearance-field">小窗透明程度
+              <input type="range" id="miniOpacity" min="20" max="100" step="1" value="94">
+            </label>
+          </div>
+          <div class="appearance-actions">
+            <button class="ghost-btn sm" id="clearPageWallpaper" type="button">清除网页壁纸</button>
+            <button class="ghost-btn sm" id="clearMiniWallpaper" type="button">清除小窗壁纸</button>
+            <button class="ghost-btn sm" id="resetAppearanceBtn" type="button">恢复默认颜色</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ 开始专注 ════ -->
+    <section class="page" id="page-focus">
+      <div class="page-header">
+        <div class="page-eyebrow">Focus</div>
+        <h1 class="page-title">开始专注</h1>
+        <p class="page-sub">让注意力只留给一件事</p>
+      </div>
+      <div class="focus-layout">
+        <div class="focus-left">
+          <div class="card timer-card">
+            <div class="timer-task-row">
+              <span class="muted" id="focusTaskLabel">未选择任务</span>
+              <span class="timer-tag hidden" id="focusTaskTag"></span>
+            </div>
+            <div class="timer-wrap">
+              <div class="timer-canvas-wrap">
+                <canvas id="timerCanvas" width="260" height="260"></canvas>
+                <div class="ring-inner">
+                  <span class="timer-phase"  id="timerPhase">准备开始</span>
+                  <strong class="timer-digits" id="timerDigits">25:00</strong>
+                  <span class="timer-start-at" id="timerStartAt">——</span>
+                </div>
+              </div>
+            </div>
+            <div class="timer-controls">
+              <button class="start-btn"    id="startPauseBtn" type="button">开始</button>
+              <button class="ghost-btn"    id="resetBtn"      type="button">重置</button>
+              <button class="ghost-btn danger" id="doneBtn"   type="button">完成专注</button>
+            </div>
+            <div class="preset-row">
+              <button class="preset" data-min="25"  type="button">25分钟</button>
+              <button class="preset" data-min="45"  type="button">45分钟</button>
+              <button class="preset" data-min="60"  type="button">60分钟</button>
+              <button class="preset" data-min="90"  type="button">90分钟</button>
+              <div class="custom-wrap">
+                <input type="number" id="customMin" min="1" max="300" placeholder="自定义">
+                <button class="ghost-btn xs" id="applyCustom" type="button">应用</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="focus-right">
+          <div class="card focus-task-picker">
+            <div class="ftp-header">
+              <span class="section-label">选择任务</span>
+              <button class="ghost-btn xs" data-page="planner" type="button">去添加 →</button>
+            </div>
+            <div class="ftp-list" id="ftpList">
+              <p class="muted small">先去「今日清单」添加任务</p>
+            </div>
+          </div>
+          <div class="card focus-music-card">
+            <span class="section-label">当前音乐 Demo</span>
+            <div class="fmc-top" id="fmc-top"><span class="muted small">暂无记录</span></div>
+            <p class="muted small" style="margin-top:8px">后期将自动识别正在播放的音乐</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ 今日清单 ════ -->
+    <section class="page" id="page-planner">
+      <div class="page-header">
+        <div class="page-eyebrow">Planner</div>
+        <h1 class="page-title">今日清单</h1>
+        <p class="page-sub" id="plannerDate">——</p>
+      </div>
+      <div class="planner-layout">
+
+        <!-- 添加任务 -->
+        <div class="card planner-add-card">
+          <div class="planner-add-head">
+            <div>
+              <div class="add-card-title">＋ 新建任务</div>
+              <p class="planner-add-sub">先写任务名称和预计时长，需要时再展开更多设置。</p>
+            </div>
+            <button class="ghost-btn sm" id="taskFormToggle" type="button" aria-expanded="false">展开详情</button>
+          </div>
+          <div class="add-form-grid">
+            <input type="text"   id="taskTitle"     placeholder="任务名称…" autocomplete="off">
+            <div class="add-form-row2">
+              <input type="number" id="taskFocusMins" min="1" max="300" placeholder="预计专注分钟">
+              <button class="primary-btn sm add-task-main-btn" id="addTaskBtn" type="button">添加到今日清单</button>
+            </div>
+            <div class="task-form-details hidden" id="taskFormDetails">
+              <input type="text" id="taskTag" placeholder="标签（选填）">
+              <div class="cycle-row">
+                <label class="cycle-check-label">
+                  <input type="checkbox" id="taskCycleCheck"> 设为循环任务
+                </label>
+                <div class="cycle-options hidden" id="cycleInputs">
+                  <div class="cycle-mode-row">
+                    <label class="cycle-mode-option">
+                      <input type="radio" name="cycleMode" value="range" checked> 日历范围
+                    </label>
+                    <label class="cycle-mode-option">
+                      <input type="radio" name="cycleMode" value="days"> 手动天数
+                    </label>
+                  </div>
+                  <div class="cycle-mode-panel" id="cycleRangePanel">
+                    <label class="cycle-date-label">开始<input type="date" id="taskCycleStart"></label>
+                    <span class="muted small">至</span>
+                    <label class="cycle-date-label">结束<input type="date" id="taskCycleEnd"></label>
+                  </div>
+                  <div class="cycle-mode-panel hidden" id="cycleDaysPanel">
+                    <label class="cycle-date-label">开始<input type="date" id="taskCycleStartDays"></label>
+                    <label class="cycle-date-label">循环天数<input type="number" id="taskCycleDays" min="1" max="365" placeholder="例如 7"></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 今日任务 -->
+        <div class="planner-section-wrap">
+          <div class="planner-sec-header">
+            <div class="planner-sec-title"><span class="sec-dot"></span>今日进行中<span class="col-count" id="activeCount">0</span></div>
+          </div>
+          <div class="task-list" id="activeTasks">
+            <div class="tasks-empty">还没有任务，来添加一件今天要做的事吧 ✦</div>
+          </div>
+        </div>
+
+        <!-- 循环任务 -->
+        <div class="planner-section-wrap">
+          <div class="planner-sec-header">
+            <div class="planner-sec-title"><span class="sec-dot cycle-dot"></span>循环任务<span class="col-count" id="cycleCount">0</span></div>
+            <button class="ghost-btn xs" id="toggleCycleTasks" type="button">展开</button>
+          </div>
+          <div class="task-list hidden" id="cycleTasks"></div>
+        </div>
+
+        <!-- 备忘录 -->
+        <div class="card memo-card">
+          <div class="memo-header">
+            <span class="section-label" style="margin-bottom:0">备忘录</span>
+            <span class="muted small future-tag">未来支持定时提醒 ⏰</span>
+          </div>
+          <div class="memo-add">
+            <textarea id="memoInput" rows="2" placeholder="随手记录：提醒、灵感、临时安排…"></textarea>
+            <button class="ghost-btn sm" id="addMemoBtn" type="button">记录</button>
+          </div>
+          <div class="memo-list" id="memoList"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="page" id="page-calendar">
+      <div class="calendar-layout">
+        <div class="card calendar-board-card">
+          <div class="calendar-toolbar">
+            <button class="ghost-btn sm history-shift-btn" id="calendarPrevBtn" type="button">←</button>
+            <div class="calendar-toolbar-center">
+              <strong id="calendarMonthLabel">——</strong>
+              <span class="muted small" id="calendarTodayLabel">——</span>
+            </div>
+            <div class="calendar-toolbar-actions">
+              <button class="ghost-btn sm" id="calendarTodayBtn" type="button">今天</button>
+              <button class="ghost-btn sm history-shift-btn" id="calendarNextBtn" type="button">→</button>
+            </div>
+          </div>
+          <div class="calendar-weekdays">
+            <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+          </div>
+          <div class="calendar-grid" id="calendarGrid"></div>
+          <div class="calendar-board-tip">
+            <span class="muted small" id="calendarAgendaDate">——</span>
+            <p class="muted small">双击空白日期格新建任务，拖动任务条换日期，左右拖动两端可延长或缩短。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-notebook">
+      <div class="page-header">
+        <div class="page-eyebrow">Notebook</div>
+        <h1 class="page-title">每日记事本</h1>
+        <p class="page-sub">记录今天要做的事，系统会自动整理成清爽的编号列表</p>
+      </div>
+      <div class="card history-filter-card">
+        <div class="history-filter-row">
+          <button class="ghost-btn sm history-shift-btn" id="notebookPrevBtn" type="button">←</button>
+          <input type="date" id="notebookDate">
+          <button class="ghost-btn sm" id="notebookFilterBtn" type="button">查看</button>
+          <button class="ghost-btn sm" id="notebookTodayBtn" type="button">今天</button>
+          <button class="ghost-btn sm history-shift-btn" id="notebookNextBtn" type="button">→</button>
+        </div>
+      </div>
+      <div class="planner-layout">
+        <div class="card notebook-card notebook-page-card">
+          <div class="memo-header">
+            <span class="section-label" style="margin-bottom:0">今日记事内容</span>
+            <span class="muted small" id="notebookCount">0 条待处理</span>
+          </div>
+          <div class="notebook-editor">
+            <textarea id="notebookInput" rows="8" placeholder="每行输入一项待办，保存后会自动去掉手写序号并重新编号。"></textarea>
+            <div class="notebook-cycle-box">
+              <label class="cycle-check-label">
+                <input type="checkbox" id="notebookCycleCheck"> 这些记事项设为循环任务
+              </label>
+              <div class="cycle-options hidden" id="notebookCycleInputs">
+                <label class="cycle-date-label">开始日期<input type="date" id="notebookCycleStart"></label>
+                <label class="cycle-date-label">循环天数<input type="number" id="notebookCycleDays" min="1" max="365" placeholder="例如 7"></label>
+              </div>
+            </div>
+            <button class="primary-btn sm" id="saveNotebookBtn" type="button">保存到当前日期记事本</button>
+          </div>
+          <div class="notebook-actions">
+            <button class="ghost-btn sm" id="noteCompleteBtn" type="button">划掉（完成）</button>
+            <button class="ghost-btn sm" id="noteMoveBtn" type="button">移动到明天</button>
+            <button class="ghost-btn sm" id="noteMoveBackBtn" type="button">移回昨天</button>
+            <button class="ghost-btn sm" id="noteDeleteBtn" type="button">删除</button>
+          </div>
+          <div class="notebook-list" id="notebookList"><p class="muted small">今天还没有记事内容</p></div>
+        </div>
+        <div class="card notebook-card notebook-page-card">
+          <div class="memo-header">
+            <span class="section-label" style="margin-bottom:0">当日复盘与感悟</span>
+            <span class="muted small" id="notebookReviewDate">今日总结</span>
+          </div>
+          <div class="notebook-editor">
+            <textarea id="notebookReviewInput" rows="7" placeholder="记录今天完成了什么、卡在什么地方、明天想怎样调整。"></textarea>
+            <div class="btn-row">
+              <button class="primary-btn sm" id="saveNotebookReviewBtn" type="button">保存今日复盘</button>
+              <button class="ghost-btn sm" id="clearNotebookReviewBtn" type="button">清空复盘</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ 我的专注 ════ -->
+    <section class="page" id="page-insights">
+      <div class="page-header">
+        <div class="page-eyebrow">Insights</div>
+        <h1 class="page-title">我的专注</h1>
+        <p class="page-sub">数据驱动，见证每一天的成长</p>
+      </div>
+      <div class="insights-layout">
+        <div class="stats-overview">
+          <article class="stat-chip card"><span class="stat-label">今日专注</span><strong class="stat-value" id="i-today">0<small>分钟</small></strong></article>
+          <article class="stat-chip card"><span class="stat-label">本周专注</span><strong class="stat-value" id="i-week">0<small>分钟</small></strong></article>
+          <article class="stat-chip card"><span class="stat-label">总专注次数</span><strong class="stat-value" id="i-count">0<small>次</small></strong></article>
+          <article class="stat-chip card"><span class="stat-label">连续天数</span><strong class="stat-value" id="i-streak">0<small>天</small></strong></article>
+        </div>
+        <div class="charts-row">
+          <div class="card chart-card pie-chart-card">
+            <span class="section-label">专注内容分布</span>
+            <div class="pie-wrap">
+              <canvas id="pieCanvas" width="260" height="260"></canvas>
+              <div class="pie-tooltip hidden" id="pieTooltip"></div>
+            </div>
+            <div class="pie-legend" id="pieLegend"><p class="muted small">完成今日专注后显示</p></div>
+          </div>
+          <div class="card chart-card bar-chart-card">
+            <span class="section-label">近 7 天趋势</span>
+            <canvas id="barCanvas" width="400" height="200"></canvas>
+          </div>
+        </div>
+        <div class="insights-bottom">
+          <div class="card top-music-card">
+            <span class="section-label">最常听的歌</span>
+            <div id="topMusicList" class="top-list"><p class="muted small">还没有记录</p></div>
+          </div>
+          <div class="card sessions-card">
+            <span class="section-label">专注记录</span>
+            <div id="sessionList" class="session-list"><p class="muted small">还没有记录</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ 我的完成 ════ -->
+    <section class="page" id="page-history">
+      <div class="page-header">
+        <div class="page-eyebrow">History</div>
+        <h1 class="page-title">我的完成</h1>
+        <p class="page-sub">回顾每一天的努力与收获</p>
+      </div>
+      <div class="history-layout">
+        <div class="card history-add-card">
+          <div class="memo-header">
+            <span class="section-label" style="margin-bottom:0">手动添加已完成任务</span>
+          </div>
+          <div class="history-add-grid">
+            <input type="text" id="manualDoneTitle" placeholder="任务名称">
+            <input type="number" id="manualDoneMins" min="0" max="600" placeholder="专注分钟">
+            <input type="date" id="manualDoneDate">
+            <button class="primary-btn sm" id="manualDoneBtn" type="button">添加到我的完成</button>
+          </div>
+        </div>
+        <div class="card history-filter-card">
+          <div class="history-filter-row">
+            <span class="section-label" style="margin-bottom:0">按日期查看</span>
+            <button class="ghost-btn sm history-shift-btn" id="historyPrevBtn" type="button" aria-label="前一天">←</button>
+            <input type="date" id="historyDate">
+            <button class="ghost-btn sm history-shift-btn" id="historyNextBtn" type="button" aria-label="后一天">→</button>
+            <button class="ghost-btn sm"    id="historyFilterBtn" type="button">查看</button>
+            <button class="primary-btn sm"  id="historyTodayBtn"  type="button">今天</button>
+          </div>
+        </div>
+        <div id="historyContent" class="history-content"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══ 小窗 ══ -->
+  <div class="mini-widget hidden" id="miniWidget">
+    <div class="mini-drag-handle" id="miniDragHandle">
+      <span class="mini-title">Focus Orbit</span>
+      <button class="mini-close" id="miniClose" type="button">×</button>
+    </div>
+    <strong class="mini-time" id="miniTime">25:00</strong>
+    <p class="mini-task" id="miniTask">未选择任务</p>
+    <div class="mini-controls">
+      <button class="mini-btn" id="miniStartPause" type="button">▷</button>
+      <button class="mini-btn" id="miniReset"      type="button">↺</button>
+    </div>
+  </div>
+
+  <!-- ══ 新的一天弹窗 ══ -->
+  <div class="overlay hidden" id="newDayOverlay">
+    <div class="modal new-day-modal">
+      <div class="modal-emoji">🌅</div>
+      <h2 class="modal-title">新的一天开始了</h2>
+      <p class="modal-sub">以下任务可以继续今天完成，勾选你想保留的：</p>
+      <div class="nd-task-list" id="ndTaskList"></div>
+      <div class="modal-actions">
+        <button class="primary-btn"  id="ndConfirmBtn" type="button">确认，开启新的一天</button>
+        <button class="ghost-btn sm" id="ndSkipBtn"    type="button">全部跳过</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 专注完成奖励弹窗 ══ -->
+  <div class="overlay hidden" id="celebrateOverlay">
+    <div class="modal celebrate-modal">
+      <div class="celebrate-emoji" id="celebrateEmoji">🎉</div>
+      <h2 class="modal-title" id="celebrateTitle">专注完成！</h2>
+      <p class="modal-sub"    id="celebrateSub">你完成了一次专注</p>
+      <div class="celebrate-stats" id="celebrateStats"></div>
+      <div class="modal-actions">
+        <button class="primary-btn"  id="celebrateOkBtn"  type="button">继续加油 💪</button>
+        <button class="ghost-btn xs" id="celebrateOffBtn" type="button">不再显示此提示</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="calendarEditorOverlay">
+    <div class="modal calendar-editor-modal">
+      <h2 class="modal-title" id="calendarEditorTitle">添加事项</h2>
+      <p class="modal-sub">开始时间和结束时间都可以自由调整，长任务可跨多天显示。</p>
+      <div class="calendar-editor-grid">
+        <input type="hidden" id="calendarEventId">
+        <label>任务<input type="text" id="calendarEventTitle" placeholder="例如 产品复盘"></label>
+        <div class="calendar-editor-row">
+          <label>日期<input type="date" id="calendarEventDate"></label>
+          <label>截止日期<input type="date" id="calendarEventEndDate"></label>
+        </div>
+        <div class="calendar-editor-row calendar-editor-row3">
+          <label>颜色<input type="color" id="calendarEventColor" value="#c85c2e"></label>
+          <label>开始时间<input type="time" id="calendarEventStart"></label>
+          <label>结束时间<input type="time" id="calendarEventEnd"></label>
+        </div>
+        <label>备注<textarea id="calendarEventNotes" rows="5" placeholder="可以补充地点、准备内容、进度说明…"></textarea></label>
+      </div>
+      <div class="modal-actions">
+        <button class="primary-btn" id="calendarSaveBtn" type="button">保存事项</button>
+        <button class="ghost-btn sm" id="calendarDeleteBtn" type="button">删除</button>
+        <button class="ghost-btn sm" id="calendarClearBtn" type="button">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
